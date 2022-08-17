@@ -108,6 +108,7 @@ import org.wso2.carbon.apimgt.impl.utils.APIVersionComparator;
 import org.wso2.carbon.apimgt.impl.utils.ApplicationUtils;
 import org.wso2.carbon.apimgt.impl.utils.ContentSearchResultNameComparator;
 import org.wso2.carbon.apimgt.impl.utils.VHostUtils;
+import org.wso2.carbon.apimgt.impl.workflow.ApplicationCreationWebHookWorkflowExecutor;
 import org.wso2.carbon.apimgt.impl.workflow.ApplicationDeletionApprovalWorkflowExecutor;
 import org.wso2.carbon.apimgt.impl.workflow.GeneralWorkflowResponse;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
@@ -1593,19 +1594,37 @@ public class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
         try {
 
             WorkflowExecutor appCreationWFExecutor = getWorkflowExecutor(WorkflowConstants.WF_TYPE_AM_APPLICATION_CREATION);
+            //List<WorkflowExecutor> appCreationWFExecutorList = getWorkflowExecutors(WorkflowConstants.WF_TYPE_AM_APPLICATION_CREATION);
             ApplicationWorkflowDTO appWFDto = new ApplicationWorkflowDTO();
             appWFDto.setApplication(application);
 
-            appWFDto.setExternalWorkflowReference(appCreationWFExecutor.generateUUID());
+            
             appWFDto.setWorkflowReference(String.valueOf(applicationId));
             appWFDto.setWorkflowType(WorkflowConstants.WF_TYPE_AM_APPLICATION_CREATION);
-            appWFDto.setCallbackUrl(appCreationWFExecutor.getCallbackURL());
+
             appWFDto.setStatus(WorkflowStatus.CREATED);
             appWFDto.setTenantDomain(organization);
             appWFDto.setTenantId(tenantId);
             appWFDto.setUserName(userId);
             appWFDto.setCreatedTime(System.currentTimeMillis());
+//            for (WorkflowExecutor workflowExecutor : appCreationWFExecutorList) {
+//            	appWFDto.setExternalWorkflowReference(workflowExecutor.generateUUID());
+//                appWFDto.setCallbackUrl(workflowExecutor.getCallbackURL());
+//            	workflowExecutor.execute(appWFDto);
+//			}
+            appWFDto.setExternalWorkflowReference(appCreationWFExecutor.generateUUID());
+            appWFDto.setCallbackUrl(appCreationWFExecutor.getCallbackURL());
             appCreationWFExecutor.execute(appWFDto);
+            
+            boolean isWebHookEnabled = true;
+			if (isWebHookEnabled) {
+				WorkflowExecutor appCreationWHWFExecutor = getWorkflowExecutor(
+						WorkflowConstants.WF_TYPE_AM_APPLICATION_CREATION_WH);
+				appWFDto.setStatus(WorkflowStatus.CREATED);
+				appWFDto.setExternalWorkflowReference(appCreationWFExecutor.generateUUID());
+				appCreationWHWFExecutor.execute(appWFDto);
+			}
+
         } catch (WorkflowException e) {
             //If the workflow execution fails, roll back transaction by removing the application entry.
             application.setId(applicationId);
@@ -1630,27 +1649,27 @@ public class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
             recommendationThread.start();
         }
         // get the workflow state once the executor is executed.
-        WorkflowDTO wfDTO = apiMgtDAO.retrieveWorkflowFromInternalReference(Integer.toString(applicationId),
+        List<WorkflowDTO> wfDTO = apiMgtDAO.retrieveWorkflowsFromInternalReference(Integer.toString(applicationId),
                 WorkflowConstants.WF_TYPE_AM_APPLICATION_CREATION);
         // only send the notification if approved
         // wfDTO is null when simple wf executor is used because wf state is not stored in the db and is always approved.
-        if (wfDTO != null) {
-            if (WorkflowStatus.APPROVED.equals(wfDTO.getStatus())) {
-                ApplicationEvent applicationEvent = new ApplicationEvent(UUID.randomUUID().toString(),
-                        System.currentTimeMillis(), APIConstants.EventType.APPLICATION_CREATE.name(), tenantId,
-                        organization, applicationId, application.getUUID(), application.getName(),
-                        application.getTokenType(),
-                        application.getTier(), application.getGroupId(), application.getApplicationAttributes(), userId);
-                APIUtil.sendNotification(applicationEvent, APIConstants.NotifierType.APPLICATION.name());
-            }
-        } else {
-            ApplicationEvent applicationEvent = new ApplicationEvent(UUID.randomUUID().toString(),
-                    System.currentTimeMillis(), APIConstants.EventType.APPLICATION_CREATE.name(), tenantId,
-                    organization, applicationId, application.getUUID(), application.getName(),
-                    application.getTokenType(), application.getTier(), application.getGroupId(),
-                    application.getApplicationAttributes(), userId);
-            APIUtil.sendNotification(applicationEvent, APIConstants.NotifierType.APPLICATION.name());
-        }
+		boolean approved = true;
+		
+		for (WorkflowDTO workflowDTO : wfDTO) {
+			if (WorkflowStatus.REJECTED.equals(workflowDTO.getStatus())
+					|| WorkflowStatus.CREATED.equals(workflowDTO.getStatus())) {
+				approved = false;
+			}
+		}
+		if (approved) {
+			ApplicationEvent applicationEvent = new ApplicationEvent(UUID.randomUUID().toString(),
+					System.currentTimeMillis(), APIConstants.EventType.APPLICATION_CREATE.name(), tenantId,
+					organization, applicationId, application.getUUID(), application.getName(),
+					application.getTokenType(), application.getTier(), application.getGroupId(),
+					application.getApplicationAttributes(), userId);
+			APIUtil.sendNotification(applicationEvent, APIConstants.NotifierType.APPLICATION.name());
+		}
+		
         return applicationId;
     }
 
@@ -2960,6 +2979,15 @@ public class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
      */
     protected WorkflowExecutor getWorkflowExecutor(String workflowType) throws WorkflowException {
         return WorkflowExecutorFactory.getInstance().getWorkflowExecutor(workflowType);
+    }
+    
+    protected List<WorkflowExecutor> getWorkflowExecutors(String workflowType) throws WorkflowException {
+    	List<WorkflowExecutor> list = new ArrayList<WorkflowExecutor>();
+    	list.add(WorkflowExecutorFactory.getInstance().getWorkflowExecutor(workflowType));
+		if (WorkflowConstants.WF_TYPE_AM_APPLICATION_CREATION.equals(workflowType)) {
+			list.add(new ApplicationCreationWebHookWorkflowExecutor());
+		}
+        return list;
     }
 
     @Override

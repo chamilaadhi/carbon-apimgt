@@ -85,7 +85,11 @@ public class WorkflowExecutorFactory {
         try {
             holder = this.getWorkflowConfigurations();
             if (holder != null) {
-                return holder.getWorkflowExecutor(workflowExecutorType);
+            	WorkflowExecutor exec = holder.getWorkflowExecutor(workflowExecutorType);
+				if (exec == null) {
+					exec = getWebHookExecutors(workflowExecutorType);
+				}
+				return exec;
             }
         } catch (WorkflowException e) {
             handleException("Error while creating WorkFlowDTO for " + workflowExecutorType, e);
@@ -93,7 +97,14 @@ public class WorkflowExecutorFactory {
         return null;
     }
 
-    /**
+    private WorkflowExecutor getWebHookExecutors(String workflowExecutorType) {
+    	if (WorkflowConstants.WF_TYPE_AM_APPLICATION_CREATION_WH.equals(workflowExecutorType)) {
+    		return new ApplicationCreationWebHookWorkflowExecutor();
+    	}
+		return null;
+	}
+
+	/**
      * Create a DTO object related to a given workflow type.
      * @param wfType Type of the workflow.
      */

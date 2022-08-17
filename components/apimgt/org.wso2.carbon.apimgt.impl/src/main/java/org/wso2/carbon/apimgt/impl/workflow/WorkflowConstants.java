@@ -29,6 +29,8 @@ public class WorkflowConstants {
     public static final String WF_TYPE_AM_SUBSCRIPTION_DELETION = "AM_SUBSCRIPTION_DELETION";
 
     public static final String WF_TYPE_AM_APPLICATION_CREATION = "AM_APPLICATION_CREATION";
+    
+    public static final String WF_TYPE_AM_APPLICATION_CREATION_WH = "AM_APPLICATION_CREATION_WH";
 
     public static final String WF_TYPE_AM_APPLICATION_DELETION = "AM_APPLICATION_DELETION";
     

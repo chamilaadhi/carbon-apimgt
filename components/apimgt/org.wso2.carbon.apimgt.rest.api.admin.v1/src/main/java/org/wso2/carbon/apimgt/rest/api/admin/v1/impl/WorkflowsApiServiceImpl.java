@@ -153,6 +153,10 @@ public class WorkflowsApiServiceImpl implements WorkflowsApiService {
                 RestApiUtil.handleResourceNotFoundError(RestApiConstants.RESOURCE_WORKFLOW, workflowReferenceId, log);
             }
 
+            if (workflowDTO.getStatus() != WorkflowStatus.CREATED) {
+                RestApiUtil.handleBadRequest("Requested workflow is already completed.", log);
+            }
+            
             String tenantDomain = workflowDTO.getTenantDomain();
             if (tenantDomain != null && !tenantDomain.equals(tenantDomainOfUser)) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -195,6 +199,20 @@ public class WorkflowsApiServiceImpl implements WorkflowsApiService {
                 WorkflowUtils.sendNotificationAfterWFComplete(workflowDTO, workflowType);
 
             }
+            
+            // logic to get the opposite type of executor
+			if (workflowType.endsWith("_WH")) {
+				workflowType = workflowType.replace("_WH", "");
+			} else {
+				workflowType = workflowType + "_WH";
+			}
+			// check whether any other pending workflows available for the same type
+			org.wso2.carbon.apimgt.impl.dto.WorkflowDTO wf = apiMgtDAO
+					.retrieveWorkflowFromInternalReference(workflowDTO.getWorkflowReference(), workflowType);
+			if (wf != null) {
+				wf.setStatus(WorkflowStatus.REJECTED);
+				apiMgtDAO.updateWorkflowStatus(wf);
+			}
             return Response.ok().entity(body).build();
 
         } catch (APIManagementException e) {
