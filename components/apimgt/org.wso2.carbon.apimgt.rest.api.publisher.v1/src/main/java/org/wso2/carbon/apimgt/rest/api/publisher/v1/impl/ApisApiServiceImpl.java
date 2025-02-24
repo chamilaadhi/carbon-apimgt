@@ -1005,7 +1005,8 @@ public class ApisApiServiceImpl implements ApisApiService {
 
             // validate custom properties
             org.json.simple.JSONArray customProperties = APIUtil.getCustomProperties(username);
-            List<String> errorProperties = PublisherCommonUtils.validateMandatoryProperties(customProperties, body);
+            List<String> errorProperties = APIUtil.validateMandatoryProperties(customProperties,
+                    APIMappingUtil.fromDTOtoAPI(body, body.getProvider()).getAdditionalProperties());
             if (!errorProperties.isEmpty()) {
                 String errorString = " : " + String.join(", ", errorProperties);
                 RestApiUtil.handleBadRequest(
@@ -3702,6 +3703,8 @@ public class ApisApiServiceImpl implements ApisApiService {
             } else if (isAuthorizationFailure(e)) {
                 RestApiUtil.handleAuthorizationFailure(
                         "Authorization failure while updating the lifecycle of API " + apiId, e, log);
+            } else if (e.getErrorHandler().getErrorCode() == ExceptionCodes.ERROR_WHILE_UPDATING_MANDATORY_PROPERTIES.getErrorCode()) {
+                RestApiUtil.handleBadRequest(e.getErrorHandler().getErrorDescription() + " on API " + apiId, e, log);
             } else {
                 throw e;
             }

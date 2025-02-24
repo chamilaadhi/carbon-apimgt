@@ -3325,6 +3325,17 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
     public APIStateChangeResponse changeLifeCycleStatus(String orgId, ApiTypeWrapper apiTypeWrapper, String action,
                                                         Map<String, Boolean> checklist) throws APIManagementException{
         APIStateChangeResponse response = new APIStateChangeResponse();
+
+        // validate custom API properties
+        org.json.simple.JSONArray customProperties = APIUtil.getCustomProperties(this.username);
+        List<String> errorProperties = APIUtil.validateMandatoryProperties(customProperties,
+                apiTypeWrapper.getApi().getAdditionalProperties());
+        if (!errorProperties.isEmpty()) {
+            String errorString = " : " + String.join(", ", errorProperties);
+            throw new APIManagementException(errorString, ExceptionCodes.from(ExceptionCodes
+                    .ERROR_WHILE_UPDATING_MANDATORY_PROPERTIES));
+        }
+
         String uuid = null;
         try {
             PrivilegedCarbonContext.startTenantFlow();
