@@ -1004,7 +1004,7 @@ public class ApisApiServiceImpl implements ApisApiService {
             }
 
             // validate custom properties
-            org.json.simple.JSONArray customProperties = APIUtil.getCustomProperties(username);
+            org.json.simple.JSONArray customProperties = APIUtil.getCustomProperties(organization);
             List<String> errorProperties = APIUtil.validateMandatoryProperties(customProperties,
                     APIMappingUtil.fromDTOtoAPI(body, body.getProvider()).getAdditionalProperties());
             if (!errorProperties.isEmpty()) {

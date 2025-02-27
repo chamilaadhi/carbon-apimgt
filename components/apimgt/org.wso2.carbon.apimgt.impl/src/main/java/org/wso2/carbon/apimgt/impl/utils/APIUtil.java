@@ -10262,9 +10262,7 @@ public final class APIUtil {
         return defaultReservedUsername;
     }
 
-    public static JSONArray getCustomProperties(String userId) throws APIManagementException {
-
-        String tenantDomain = MultitenantUtils.getTenantDomain(userId);
+    public static JSONArray getCustomProperties(String tenantDomain) throws APIManagementException {
 
         JSONArray customPropertyAttributes = null;
         JSONObject propertyConfig = getMandatoryPropertyKeysFromRegistry(tenantDomain);

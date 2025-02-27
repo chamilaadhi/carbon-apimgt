@@ -3325,22 +3325,6 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
     public APIStateChangeResponse changeLifeCycleStatus(String orgId, ApiTypeWrapper apiTypeWrapper, String action,
                                                         Map<String, Boolean> checklist) throws APIManagementException{
         APIStateChangeResponse response = new APIStateChangeResponse();
-
-        if (!apiTypeWrapper.isAPIProduct()){
-            // validate custom API properties
-            if (StringUtils.equals(action, APIConstants.LC_PUBLISH_LC_STATE)) {
-                org.json.simple.JSONArray customProperties = APIUtil.getCustomProperties(this.username);
-                List<String> errorProperties = APIUtil.validateMandatoryProperties(customProperties,
-                        apiTypeWrapper.getApi().getAdditionalProperties());
-
-                if (!errorProperties.isEmpty()) {
-                    String errorString = " : " + String.join(", ", errorProperties);
-                    throw new APIManagementException(errorString, ExceptionCodes.from(ExceptionCodes
-                            .ERROR_WHILE_UPDATING_MANDATORY_PROPERTIES));
-                }
-            }
-        }
-
         String uuid = null;
         try {
             PrivilegedCarbonContext.startTenantFlow();
@@ -3357,6 +3341,21 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             int apiOrApiProductId;
             boolean isApiProduct = apiTypeWrapper.isAPIProduct();
             String workflowType;
+
+            if (!apiTypeWrapper.isAPIProduct()){
+                // validate custom API properties
+                if (StringUtils.equals(action, APIConstants.LC_PUBLISH_LC_STATE)) {
+                    org.json.simple.JSONArray customProperties = APIUtil.getCustomProperties(this.tenantDomain);
+                    List<String> errorProperties = APIUtil.validateMandatoryProperties(customProperties,
+                            apiTypeWrapper.getApi().getAdditionalProperties());
+
+                    if (!errorProperties.isEmpty()) {
+                        String errorString = " : " + String.join(", ", errorProperties);
+                        throw new APIManagementException(errorString, ExceptionCodes.from(ExceptionCodes
+                                .ERROR_WHILE_UPDATING_MANDATORY_PROPERTIES));
+                    }
+                }
+            }
 
             if (isApiProduct) {
                 APIProduct apiProduct = apiTypeWrapper.getApiProduct();
