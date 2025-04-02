@@ -277,6 +277,15 @@ public interface APIManager {
      * @throws org.wso2.carbon.apimgt.api.APIManagementException if failed add subscriber
      */
     void addSubscriber(String username, String groupingId) throws APIManagementException;
+    
+    /**
+     * Creates a new subscriber given the username, the grouping Id and organization
+     *
+     * @param username   Username of the subscriber to be added
+     * @param groupingId - the groupId to which the subscriber belongs to
+     * @throws org.wso2.carbon.apimgt.api.APIManagementException if failed add subscriber
+     */
+    void addSubscriber(String username, String groupingId, String organization) throws APIManagementException;
 
     /**
      * Updates the details of the given subscriber.
