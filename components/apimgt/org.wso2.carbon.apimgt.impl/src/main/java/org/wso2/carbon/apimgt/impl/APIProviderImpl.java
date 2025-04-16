@@ -1870,7 +1870,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                     }
 
                     boolean isPolicyNameMatch = policyData.getSpecification().getName().equals(policy.getPolicyName())
-                            || (policyData.getSpecification().getName()).equals(policy.getPolicyName() + "_imported");
+                            || policyData.getSpecification().getName().equals(policy.getPolicyName() + "_imported");
                     if (!isPolicyNameMatch || !policyData.getSpecification().getVersion()
                                     .equals(policy.getPolicyVersion())) {
                         throw new APIManagementException("Applied policy " + policy.getPolicyName()
