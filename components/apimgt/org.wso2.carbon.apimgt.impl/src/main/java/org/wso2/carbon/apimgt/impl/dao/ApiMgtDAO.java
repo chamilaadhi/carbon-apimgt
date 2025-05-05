@@ -23418,14 +23418,19 @@ public class ApiMgtDAO {
 
             try (ResultSet rs = getPstmt.executeQuery()) {
                 while (rs.next()) {
-                    addPstmt.setString(1, rs.getString("ID"));
-                    addPstmt.setString(2, apiRevision.getApiUUID());
-                    addPstmt.setBinaryStream(3, rs.getBinaryStream("SEQUENCE"));
-                    addPstmt.setString(4, rs.getString("TYPE"));
-                    addPstmt.setString(5, apiRevision.getRevisionUUID());
-                    addPstmt.setString(6, rs.getString("NAME"));
-                    addPstmt.addBatch();
-                    count++;
+                    try (InputStream sequenceStream = rs.getBinaryStream("SEQUENCE")) {
+                        addPstmt.setString(1, rs.getString("ID"));
+                        addPstmt.setString(2, apiRevision.getApiUUID());
+                        addPstmt.setBinaryStream(3, sequenceStream);
+                        addPstmt.setString(4, rs.getString("TYPE"));
+                        addPstmt.setString(5, apiRevision.getRevisionUUID());
+                        addPstmt.setString(6, rs.getString("NAME"));
+                        addPstmt.addBatch();
+                        count++;
+                    } catch (IOException ex) {
+                        handleException("Error while fetching Custom Sequence of API: " + apiRevision.getApiUUID(),
+                                ex);
+                    }
                 }
             }
 
