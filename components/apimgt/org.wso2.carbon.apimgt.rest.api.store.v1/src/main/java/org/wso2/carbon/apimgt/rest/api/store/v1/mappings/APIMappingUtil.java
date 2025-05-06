@@ -489,7 +489,7 @@ public class APIMappingUtil {
         }
 
         // Set Async protocols of API based on the gateway vendor
-        if (SolaceConstants.SOLACE_ENVIRONMENT.equals(apidto.getGatewayVendor())) {
+        if (SolaceConstants.SOLACE_ENVIRONMENT.equals(apidto.getGatewayType())) {
             apidto.setAsyncTransportProtocols(AdditionalSubscriptionInfoMappingUtil.setEndpointURLsForApiDto(
                     model.getApi(), organization));
         }
