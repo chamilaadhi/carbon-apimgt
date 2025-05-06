@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.carbon.apimgt.impl.definitions.mixin;
+package org.wso2.carbon.apimgt.spec.parser.definitions.mixin;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
