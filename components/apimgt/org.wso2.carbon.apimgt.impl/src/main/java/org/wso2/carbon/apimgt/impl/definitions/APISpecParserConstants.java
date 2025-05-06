@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * This class represents the constants used in the API Specification Parser.
  */
-public final class APIConstants {
+public final class APISpecParserConstants {
     public static final String STRING = "string";
     public static final String OBJECT = "object";
     public static final String APPLICATION_JSON_MEDIA_TYPE = "application/json";
