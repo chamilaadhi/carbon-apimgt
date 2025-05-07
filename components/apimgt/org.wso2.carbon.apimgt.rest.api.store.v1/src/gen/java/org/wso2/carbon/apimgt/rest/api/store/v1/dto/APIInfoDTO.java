@@ -41,6 +41,7 @@ public class APIInfoDTO   {
     private APIBusinessInformationDTO businessInformation = null;
     private Boolean isSubscriptionAvailable = null;
     private String monetizationLabel = null;
+    private String gatewayType = null;
     private String gatewayVendor = null;
     private List<APIInfoAdditionalPropertiesDTO> additionalProperties = new ArrayList<APIInfoAdditionalPropertiesDTO>();
     private Boolean monetizedInfo = null;
@@ -326,6 +327,23 @@ public class APIInfoDTO   {
 
   /**
    **/
+  public APIInfoDTO gatewayType(String gatewayType) {
+    this.gatewayType = gatewayType;
+    return this;
+  }
+
+  
+  @ApiModelProperty(example = "solace", value = "")
+  @JsonProperty("gatewayType")
+  public String getGatewayType() {
+    return gatewayType;
+  }
+  public void setGatewayType(String gatewayType) {
+    this.gatewayType = gatewayType;
+  }
+
+  /**
+   **/
   public APIInfoDTO gatewayVendor(String gatewayVendor) {
     this.gatewayVendor = gatewayVendor;
     return this;
@@ -439,6 +457,7 @@ public class APIInfoDTO   {
         Objects.equals(businessInformation, apIInfo.businessInformation) &&
         Objects.equals(isSubscriptionAvailable, apIInfo.isSubscriptionAvailable) &&
         Objects.equals(monetizationLabel, apIInfo.monetizationLabel) &&
+        Objects.equals(gatewayType, apIInfo.gatewayType) &&
         Objects.equals(gatewayVendor, apIInfo.gatewayVendor) &&
         Objects.equals(additionalProperties, apIInfo.additionalProperties) &&
         Objects.equals(monetizedInfo, apIInfo.monetizedInfo) &&
@@ -448,7 +467,7 @@ public class APIInfoDTO   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, description, context, version, type, createdTime, provider, lifeCycleStatus, thumbnailUri, avgRating, throttlingPolicies, advertiseInfo, businessInformation, isSubscriptionAvailable, monetizationLabel, gatewayVendor, additionalProperties, monetizedInfo, egress, subtype);
+    return Objects.hash(id, name, description, context, version, type, createdTime, provider, lifeCycleStatus, thumbnailUri, avgRating, throttlingPolicies, advertiseInfo, businessInformation, isSubscriptionAvailable, monetizationLabel, gatewayType, gatewayVendor, additionalProperties, monetizedInfo, egress, subtype);
   }
 
   @Override
@@ -472,6 +491,7 @@ public class APIInfoDTO   {
     sb.append("    businessInformation: ").append(toIndentedString(businessInformation)).append("\n");
     sb.append("    isSubscriptionAvailable: ").append(toIndentedString(isSubscriptionAvailable)).append("\n");
     sb.append("    monetizationLabel: ").append(toIndentedString(monetizationLabel)).append("\n");
+    sb.append("    gatewayType: ").append(toIndentedString(gatewayType)).append("\n");
     sb.append("    gatewayVendor: ").append(toIndentedString(gatewayVendor)).append("\n");
     sb.append("    additionalProperties: ").append(toIndentedString(additionalProperties)).append("\n");
     sb.append("    monetizedInfo: ").append(toIndentedString(monetizedInfo)).append("\n");
