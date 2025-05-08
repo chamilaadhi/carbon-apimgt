@@ -2864,6 +2864,11 @@ public class APIManagerConfiguration {
         return apimGovConfigurationDto;
     }
 
+    /**
+     * Get Solace Config
+     *
+     * @return SolaceConfig
+     */
     public SolaceConfig getSolaceConfig() {
         return solaceConfig;
     }
