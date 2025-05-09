@@ -3999,6 +3999,9 @@ components:
         monetizationLabel:
           type: string
           example: Free
+        gatewayType:
+          type: string
+          example: solace
         gatewayVendor:
           type: string
           example: WSO2
@@ -4292,6 +4295,11 @@ components:
         lastUpdatedTime:
           type: string
           example: 2020-10-31T13:57:16.229
+        gatewayType:
+          title: Gateway type of the API
+          type: string
+          example:
+            solace
         gatewayVendor:
           title: Gateway vendor of the API
           type: string

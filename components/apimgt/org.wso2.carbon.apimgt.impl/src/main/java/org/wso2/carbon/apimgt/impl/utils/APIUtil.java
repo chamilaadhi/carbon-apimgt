@@ -174,6 +174,7 @@ import org.wso2.carbon.apimgt.impl.dto.APIKeyValidationInfoDTO;
 import org.wso2.carbon.apimgt.impl.dto.APISubscriptionInfoDTO;
 import org.wso2.carbon.apimgt.impl.dto.ConditionDto;
 import org.wso2.carbon.apimgt.impl.dto.JwtTokenInfoDTO;
+import org.wso2.carbon.apimgt.impl.dto.SolaceConfig;
 import org.wso2.carbon.apimgt.impl.dto.SubscribedApiDTO;
 import org.wso2.carbon.apimgt.impl.dto.SubscriptionPolicyDTO;
 import org.wso2.carbon.apimgt.impl.dto.ThrottleProperties;
@@ -3390,6 +3391,7 @@ public final class APIUtil {
         Map<String, List<String>> apiData = new HashMap<>();
         JsonObject synapseConfigJSON = null;
         JsonObject apkConfigJSON = null;
+        JsonObject solaceConfigJSON = null;
         try (InputStream synapseInputStream = APIUtil.class.getClassLoader()
                 .getResourceAsStream("gatewayFeatureCatalog/synapse-gateway-feature-catalog.json")) {
             if (synapseInputStream == null) {
@@ -3412,24 +3414,40 @@ public final class APIUtil {
             throw new APIManagementException("Error while reading APK Gateway Feature Catalog JSON", e);
         }
 
-        if (synapseConfigJSON == null || apkConfigJSON == null) {
+        try (InputStream solaceInputStream = APIUtil.class.getClassLoader()
+                .getResourceAsStream("gatewayFeatureCatalog/solace-feature-catalog.json")) {
+            if (solaceInputStream == null) {
+                throw new APIManagementException("Solace Feature Catalog JSON not found");
+            }
+            InputStreamReader reader = new InputStreamReader(solaceInputStream, StandardCharsets.UTF_8);
+            solaceConfigJSON = JsonParser.parseReader(reader).getAsJsonObject();
+        } catch (IOException e) {
+            throw new APIManagementException("Error while reading Solace Feature Catalog JSON", e);
+        }
+
+        if (synapseConfigJSON == null || apkConfigJSON == null || solaceConfigJSON == null) {
             throw new APIManagementException("Error while reading Gateway Feature Catalog JSON");
         }
 
         JsonObject synapseConfigsJSONValue = synapseConfigJSON.getAsJsonObject(APIConstants.WSO2_SYNAPSE_GATEWAY);
         JsonObject apkConfigsJSONValue = apkConfigJSON.getAsJsonObject(APIConstants.WSO2_APK_GATEWAY);
+        JsonObject solaceConfigsJSONValue = solaceConfigJSON.getAsJsonObject(APIConstants.SOLACE);
 
         JsonObject synapseJSON = synapseConfigsJSONValue.getAsJsonObject("gatewayFeatures");
         JsonObject apkJSON = apkConfigsJSONValue.getAsJsonObject("gatewayFeatures");
+        JsonObject solaceJSON = solaceConfigsJSONValue.getAsJsonObject("gatewayFeatures");
 
         Map<String, Object> synapseMap = gson.fromJson(synapseJSON, type);
         Map<String, Object> apkMap = gson.fromJson(apkJSON, type);
+        Map<String, Object> solaceMap = gson.fromJson(solaceJSON, type);
 
         gatewayConfigsMap.put(APIConstants.WSO2_SYNAPSE_GATEWAY, synapseMap);
         gatewayConfigsMap.put(APIConstants.WSO2_APK_GATEWAY, apkMap);
+        gatewayConfigsMap.put(APIConstants.SOLACE, solaceMap);
 
         JsonArray synapseApiTypes = synapseConfigsJSONValue.getAsJsonArray("apiTypes");
         JsonArray apkApiTypes = apkConfigsJSONValue.getAsJsonArray("apiTypes");
+        JsonArray solaceApiTypes = solaceConfigsJSONValue.getAsJsonArray("apiTypes");
         for (String key : APIConstants.API_TYPES) {
             apiData.put(key, new ArrayList<>());
         }
@@ -3445,6 +3463,13 @@ public final class APIUtil {
             String apiType = apkApiTypes.get(i).getAsString();
             if (apiData.containsKey(apiType)) {
                 apiData.get(apiType).add(APIConstants.WSO2_APK_GATEWAY);
+            }
+        }
+
+        for (int i = 0; i < solaceApiTypes.size(); i++) {
+            String apiType = solaceApiTypes.get(i).getAsString();
+            if (apiData.containsKey(apiType)) {
+                apiData.get(apiType).add(APIConstants.SOLACE);
             }
         }
 
@@ -6779,7 +6804,7 @@ public final class APIUtil {
             SubscriptionPolicy retrievedPolicy = apiMgtDAO.getSubscriptionPolicy(policyName, tenantId);
             deployRetrievedSubscriptionPolicy(tenantId, retrievedPolicy);
         }
-        
+
         long tenThousandPerMinTier = defualtLimits.containsKey(APIConstants.DEFAULT_API_POLICY_TEN_THOUSAND_REQ_PER_MIN) ?
                 defualtLimits.get(APIConstants.DEFAULT_API_POLICY_TEN_THOUSAND_REQ_PER_MIN) : 10000;
         long twentyThousandPerMinTier = defualtLimits.containsKey(
@@ -9103,7 +9128,7 @@ public final class APIUtil {
             properties.put(APIConstants.USER_CTX_PROPERTY_ISADMIN, true);
         }
         properties.put(APIConstants.USER_CTX_PROPERTY_SKIP_ROLES, APIUtil.getSkipRolesByRegex());
-        
+
         if (APIUtil.areOrganizationsRegistered()) {
             properties.put(APIConstants.USER_CTX_PROPERTY_ORGS_AVAILABLE, true);
         }
@@ -10487,7 +10512,7 @@ public final class APIUtil {
         return ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService().getAPIManagerConfiguration()
                 .getOrgAccessControl().isEnabled();
     }
-    
+
     /**
      * Check whether organizations are available in the system
      * @return
@@ -11013,7 +11038,7 @@ public final class APIUtil {
         byte[] digest = messageDigest.digest();
         return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(digest);
     }
-    
+
     /**
      * This method is used to get the default API level policy in a given tenant space
      *
@@ -11603,5 +11628,14 @@ public final class APIUtil {
                     "Error occurred while validating the API with the federated gateway: "
                             + api.getGatewayType(), e);
         }
+    }
+
+    /**
+     * Returns the Solace configuration object.
+     * @return  The Solace configuration object.
+     */
+    public static SolaceConfig getSolaceConfig() {
+        return ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService()
+                .getAPIManagerConfiguration().getSolaceConfig();
     }
 }
