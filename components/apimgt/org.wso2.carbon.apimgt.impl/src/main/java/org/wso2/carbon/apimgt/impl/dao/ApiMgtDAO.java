@@ -23413,6 +23413,9 @@ public class ApiMgtDAO {
              PreparedStatement addPstmt = connection.prepareStatement(addCBSqlQuery)) {
             connection.setAutoCommit(false);
             getPstmt.setString(1, apiRevision.getApiUUID());
+
+            // Handled Custom Backend batch update separately since mssql gives stream close issue
+            // due to TDS protocol
             if (connection.getMetaData().getDriverName().contains("MS SQL") ||
                     connection.getMetaData().getDriverName().contains("Microsoft")) {
                 try (ResultSet rs = getPstmt.executeQuery()) {
