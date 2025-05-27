@@ -727,6 +727,7 @@ public class APIAdminImpl implements APIAdmin {
         }
         if (!KeyManagerConfiguration.TokenType.valueOf(keyManagerConfigurationDTO.getTokenType().toUpperCase())
                 .equals(KeyManagerConfiguration.TokenType.EXCHANGED)) {
+            sanitizeKeyManagerConfiguration(keyManagerConfigurationDTO);
             validateKeyManagerConfiguration(keyManagerConfigurationDTO);
             validateKeyManagerEndpointConfiguration(keyManagerConfigurationDTO);
         }
@@ -951,6 +952,7 @@ public class APIAdminImpl implements APIAdmin {
             throws APIManagementException {
         if (!KeyManagerConfiguration.TokenType.valueOf(keyManagerConfigurationDTO.getTokenType().toUpperCase())
                 .equals(KeyManagerConfiguration.TokenType.EXCHANGED)) {
+            sanitizeKeyManagerConfiguration(keyManagerConfigurationDTO);
             validateKeyManagerConfiguration(keyManagerConfigurationDTO);
             validateKeyManagerEndpointConfiguration(keyManagerConfigurationDTO);
         }
@@ -1461,6 +1463,16 @@ public class APIAdminImpl implements APIAdmin {
                     ExceptionCodes.from(ExceptionCodes.LABEL_NOT_FOUND, labelID));
         }
         return labelsDAO.getMappedApisForLabel(labelID);
+    }
+
+    private void sanitizeKeyManagerConfiguration(KeyManagerConfigurationDTO keyManagerConfigurationDTO) {
+        if (keyManagerConfigurationDTO != null && keyManagerConfigurationDTO.getAdditionalProperties() != null) {
+            for (Map.Entry<String, Object> entry : keyManagerConfigurationDTO.getAdditionalProperties().entrySet()) {
+                if (entry.getValue() instanceof String) {
+                    entry.setValue(((String) entry.getValue()).trim());
+                }
+            }
+        }
     }
 
     private void validateKeyManagerConfiguration(KeyManagerConfigurationDTO keyManagerConfigurationDTO)
