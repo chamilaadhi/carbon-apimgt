@@ -3671,7 +3671,7 @@ public class RegistryPersistenceImpl implements APIPersistence {
             result.setReturnedAPIsCount(publisherAPIProductInfoList.size());
             result.setTotalAPIsCount(totalLength);
 
-        } catch (GovernanceException e | APIManagementException e) {
+        } catch (GovernanceException | APIManagementException e) {
             throw new APIPersistenceException("Error while searching API products ", e);
         } finally {
             PaginationContext.destroy();
