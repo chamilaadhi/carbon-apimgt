@@ -3615,7 +3615,8 @@ public class RegistryPersistenceImpl implements APIPersistence {
 
             log.debug("Modified query for publisher product search: " + modifiedQuery);
 
-            String tenantAdminUsername = getTenantAwareUsername(RegistryPersistenceUtil.getTenantAdminUserName(requestedTenantDomain));
+            String tenantAdminUsername = getTenantAwareUsername(RegistryPersistenceUtil.getTenantAdminUserName(
+                    requestedTenantDomain));
             PrivilegedCarbonContext.getThreadLocalCarbonContext().setUsername(tenantAdminUsername);
 
             final int maxPaginationLimit = getMaxPaginationLimit();
