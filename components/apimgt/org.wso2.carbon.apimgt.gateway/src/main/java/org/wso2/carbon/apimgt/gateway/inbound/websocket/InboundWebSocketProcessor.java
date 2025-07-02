@@ -73,7 +73,7 @@ import java.util.Set;
  * This class intercepts the inbound websocket handler execution during handshake, request messaging, response
  * messaging phases. This processor depends on netty inbound websocket channel pipeline.
  */
-public class InboundWebSocketProcessor {
+public class InboundWebSocketProcessor implements WebSocketProcessor {
 
     private static final Log log = LogFactory.getLog(InboundWebSocketProcessor.class);
     private WebSocketAnalyticsMetricsHandler metricsHandler;
@@ -94,6 +94,7 @@ public class InboundWebSocketProcessor {
      * @param inboundMessageContext InboundMessageContext
      * @return InboundProcessorResponseDTO with handshake processing response
      */
+    @Override
     public InboundProcessorResponseDTO handleHandshake(FullHttpRequest req, ChannelHandlerContext ctx,
                                                        InboundMessageContext inboundMessageContext) {
 
@@ -175,6 +176,7 @@ public class InboundWebSocketProcessor {
      * @param inboundMessageContext InboundMessageContext
      * @return InboundProcessorResponseDTO with handshake processing response
      */
+    @Override
     public InboundProcessorResponseDTO handleRequest(WebSocketFrame msg, InboundMessageContext inboundMessageContext)
             throws APISecurityException {
 
@@ -199,6 +201,7 @@ public class InboundWebSocketProcessor {
      * @param inboundMessageContext InboundMessageContext
      * @return InboundProcessorResponseDTO with handshake processing response
      */
+    @Override
     public InboundProcessorResponseDTO handleResponse(WebSocketFrame msg, InboundMessageContext inboundMessageContext)
             throws Exception {
 
@@ -223,7 +226,7 @@ public class InboundWebSocketProcessor {
      * @return if validation success
      * @throws APISecurityException if an error occurs
      */
-    private boolean isOauthAuthentication(FullHttpRequest req, InboundMessageContext inboundMessageContext)
+    protected boolean isOauthAuthentication(FullHttpRequest req, InboundMessageContext inboundMessageContext)
             throws APISecurityException {
 
         if (!inboundMessageContext.getRequestHeaders().containsKey(WebsocketUtil.authorizationHeader)) {
@@ -252,7 +255,7 @@ public class InboundWebSocketProcessor {
      * @return true if validation success
      * @throws APISecurityException if an error occurs
      */
-    private boolean isAPIKeyAuthentication(FullHttpRequest req, InboundMessageContext inboundMessageContext)
+    protected boolean isAPIKeyAuthentication(FullHttpRequest req, InboundMessageContext inboundMessageContext)
             throws APISecurityException {
 
         if (!inboundMessageContext.getRequestHeaders().containsKey(APIConstants.API_KEY_HEADER_QUERY_PARAM)) {
@@ -278,7 +281,7 @@ public class InboundWebSocketProcessor {
      * @param req                   Request object
      * @param inboundMessageContext InboundMessageContext
      */
-    private void setUris(FullHttpRequest req, InboundMessageContext inboundMessageContext)
+    protected void setUris(FullHttpRequest req, InboundMessageContext inboundMessageContext)
             throws WebSocketApiException {
 
         try {
@@ -309,7 +312,7 @@ public class InboundWebSocketProcessor {
      * @throws WebSocketApiException     If an error occurs
      * @throws ResourceNotFoundException If no matching API or resource found
      */
-    private void setMatchingResource(ChannelHandlerContext ctx, FullHttpRequest req,
+    protected void setMatchingResource(ChannelHandlerContext ctx, FullHttpRequest req,
                                      InboundMessageContext inboundMessageContext) throws WebSocketApiException,
             ResourceNotFoundException {
 
@@ -371,7 +374,7 @@ public class InboundWebSocketProcessor {
      * @throws AxisFault          if an error occurs getting context
      * @throws URISyntaxException if an error occurs getting transport scheme
      */
-    private MessageContext getMessageContext(InboundMessageContext inboundMessageContext)
+    protected MessageContext getMessageContext(InboundMessageContext inboundMessageContext)
             throws AxisFault, URISyntaxException {
 
         String tenantDomain = inboundMessageContext.getTenantDomain();
@@ -390,7 +393,7 @@ public class InboundWebSocketProcessor {
      * @param ctx                   ChannelHandlerContext
      * @param inboundMessageContext InboundMessageContext
      */
-    private void setApiPropertiesToChannel(ChannelHandlerContext ctx, InboundMessageContext inboundMessageContext) {
+    protected void setApiPropertiesToChannel(ChannelHandlerContext ctx, InboundMessageContext inboundMessageContext) {
         Map<String, Object> apiPropertiesMap = WebSocketUtils.getApiProperties(ctx);
         apiPropertiesMap.put(RESTConstants.SYNAPSE_REST_API, inboundMessageContext.getApiName());
         apiPropertiesMap.put(RESTConstants.PROCESSED_API, inboundMessageContext.getApi());
@@ -410,7 +413,7 @@ public class InboundWebSocketProcessor {
      * @param synCtx                Synapse request
      * @param inboundMessageContext InboundMessageContext
      */
-    private void reConstructFullUriWithVersion(FullHttpRequest req, MessageContext synCtx,
+    protected void reConstructFullUriWithVersion(FullHttpRequest req, MessageContext synCtx,
                                                InboundMessageContext inboundMessageContext) {
 
         String fullRequestPath = inboundMessageContext.getFullRequestPath().replace(
@@ -430,7 +433,7 @@ public class InboundWebSocketProcessor {
      *
      * @param ctx Channel context
      */
-    private void publishResourceNotFoundEvent(ChannelHandlerContext ctx) {
+    protected void publishResourceNotFoundEvent(ChannelHandlerContext ctx) {
 
         if (APIUtil.isAnalyticsEnabled()) {
             WebSocketUtils.setApiPropertyToChannel(ctx, SynapseConstants.ERROR_MESSAGE,
@@ -445,7 +448,7 @@ public class InboundWebSocketProcessor {
      *
      * @param ctx Channel context
      */
-    private void publishHandshakeAuthErrorEvent(ChannelHandlerContext ctx, String errorMessage) {
+    protected void publishHandshakeAuthErrorEvent(ChannelHandlerContext ctx, String errorMessage) {
 
         if (APIUtil.isAnalyticsEnabled()) {
             WebSocketUtils.setApiPropertyToChannel(ctx, SynapseConstants.ERROR_CODE,
@@ -461,7 +464,7 @@ public class InboundWebSocketProcessor {
      *
      * @param ctx Channel context
      */
-    private void removeErrorPropertiesFromChannel(ChannelHandlerContext ctx) {
+    protected void removeErrorPropertiesFromChannel(ChannelHandlerContext ctx) {
         WebSocketUtils.removeApiPropertyFromChannel(ctx, SynapseConstants.ERROR_CODE);
         WebSocketUtils.removeApiPropertyFromChannel(ctx, SynapseConstants.ERROR_MESSAGE);
     }
@@ -472,7 +475,7 @@ public class InboundWebSocketProcessor {
      * @param request               Handshake request
      * @param inboundMessageContext InboundMessageContext
      */
-    private void setRequestHeaders(FullHttpRequest request, InboundMessageContext inboundMessageContext) {
+    protected void setRequestHeaders(FullHttpRequest request, InboundMessageContext inboundMessageContext) {
         Map<String, String> headersToAdd = inboundMessageContext.getHeadersToAdd();
         List<String> headersToRemove = inboundMessageContext.getHeadersToRemove();
         for (Map.Entry<String, String> header : headersToAdd.entrySet()) {
