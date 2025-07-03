@@ -3615,17 +3615,16 @@ public class RegistryPersistenceImpl implements APIPersistence {
 
             log.debug("Modified query for publisher product search: " + modifiedQuery);
 
-            String tenantAdminUsername = getTenantAwareUsername(RegistryPersistenceUtil.getTenantAdminUserName(
-                    requestedTenantDomain));
+            String tenantAdminUsername = getTenantAwareUsername(
+                    RegistryPersistenceUtil.getTenantAdminUserName(requestedTenantDomain));
             PrivilegedCarbonContext.getThreadLocalCarbonContext().setUsername(tenantAdminUsername);
 
             final int maxPaginationLimit = getMaxPaginationLimit();
 
             PaginationContext.init(start, offset, "ASC", APIConstants.API_OVERVIEW_NAME, maxPaginationLimit);
 
-            List<GovernanceArtifact> governanceArtifacts = GovernanceUtils
-                    .findGovernanceArtifacts(modifiedQuery, sysRegistry, APIConstants.API_RXT_MEDIA_TYPE,
-                            true);
+            List<GovernanceArtifact> governanceArtifacts = GovernanceUtils.findGovernanceArtifacts(modifiedQuery,
+                    sysRegistry, APIConstants.API_RXT_MEDIA_TYPE, true);
             int totalLength = PaginationContext.getInstance().getLength();
 
             // Check to see if we can speculate that there are more APIs to be loaded
