@@ -111,11 +111,9 @@ import static org.wso2.carbon.apimgt.impl.utils.APIUtil.getOAuthConfigurationFro
 import static org.wso2.carbon.base.CarbonBaseConstants.CARBON_HOME;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(
-        {LogFactory.class, APIUtil.class, ServiceReferenceHolder.class, SSLSocketFactory.class, CarbonUtils.class,
-                GovernanceUtils.class, MultitenantUtils.class,
-                GenericArtifactManager.class, KeyManagerHolder.class, ApiMgtDAO.class, PrivilegedCarbonContext.class,
-                IdentityUtil.class})
+@PrepareForTest({ LogFactory.class, APIUtil.class, ServiceReferenceHolder.class, SSLSocketFactory.class,
+        CarbonUtils.class, GovernanceUtils.class, MultitenantUtils.class, GenericArtifactManager.class,
+        KeyManagerHolder.class, ApiMgtDAO.class, PrivilegedCarbonContext.class, IdentityUtil.class })
 @PowerMockIgnore("javax.net.ssl.*")
 public class APIUtilTest {
 
@@ -1759,8 +1757,8 @@ public class APIUtilTest {
         Mockito.when(LogFactory.getLog(any(Class.class))).thenReturn(logMock);
 
         PowerMockito.mockStatic(IdentityUtil.class);
-        PowerMockito.doReturn(true).when(IdentityUtil.class, "isUserStoreInUsernameCaseSensitive",
-                userNameWithoutChange);
+        PowerMockito.doReturn(true)
+                .when(IdentityUtil.class, "isUserStoreInUsernameCaseSensitive", userNameWithoutChange);
 
         boolean expectedResult = APIUtil.hasPermission(userNameWithoutChange, permission);
         Assert.assertEquals(true, expectedResult);
