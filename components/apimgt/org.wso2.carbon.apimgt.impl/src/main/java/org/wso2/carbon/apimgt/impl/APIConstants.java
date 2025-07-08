@@ -3341,4 +3341,8 @@ public final class APIConstants {
         public static final String SCHEDULER_TASK_CHECK_INTERVAL = "TaskCheckIntervalMinutes";
         public static final String SCHEDULER_TASK_CLEANUP_INTERVAL = "TaskCleanupIntervalMinutes";
     }
+
+    public static final String SYNAPSE_API_NAME_PREFIX = "prod";
+
+    public static final String ENABLE_SYNAPSE_API_PREFIX = "enableSynapseAPIPrefix";
 }

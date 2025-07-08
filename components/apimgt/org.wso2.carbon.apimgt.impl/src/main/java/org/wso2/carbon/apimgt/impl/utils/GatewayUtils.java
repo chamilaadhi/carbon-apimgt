@@ -231,4 +231,9 @@ public class GatewayUtils {
         gatewayAPIDTO.setSequencesToBeRemove(
                 addStringToList(sandboxEndpointSequence, gatewayAPIDTO.getSequencesToBeRemove()));
     }
+
+    public static boolean isSynapseAPIPrefixEnabled() {
+
+        return Boolean.parseBoolean(System.getProperty(APIConstants.ENABLE_SYNAPSE_API_PREFIX));
+    }
 }
