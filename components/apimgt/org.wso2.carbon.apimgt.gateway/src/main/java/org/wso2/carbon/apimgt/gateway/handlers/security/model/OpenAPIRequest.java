@@ -98,7 +98,7 @@ public class OpenAPIRequest implements Request {
             String value =  header.getValue().iterator().next();
             if (headerKey.equalsIgnoreCase(contentTypeHeader)) {
                 headerKey = "Content-Type";
-            } else if (headerKey.equalsIgnoreCase(acceptHeader) && GatewayUtils.isAcceptHeaderValidationEnabled()) {
+            } else if (GatewayUtils.isAcceptHeaderValidationEnabled() && headerKey.equalsIgnoreCase(acceptHeader)) {
                 headerKey = "Accept";
             } else {
                 headerKey = headerKey.toLowerCase(Locale.ROOT);
