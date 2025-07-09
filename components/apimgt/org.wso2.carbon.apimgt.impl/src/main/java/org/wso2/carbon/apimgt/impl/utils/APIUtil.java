@@ -11787,6 +11787,31 @@ public final class APIUtil {
         }
     }
 
+    /**
+     * Generates AWS Signature Version 4 headers for authenticating requests using temporary credentials
+     * obtained via the AWS STS AssumeRole API.
+     * <p>
+     * This method first calls AWS STS to assume a specified IAM role, retrieves temporary security credentials,
+     * and then generates the AWS Signature V4 headers using those credentials to authenticate the final request.
+     *
+     * @param host           The hostname of the target API endpoint.
+     * @param method         The HTTP method of the request (e.g., "GET", "POST").
+     * @param service        The AWS service identifier (e.g., "bedrock").
+     * @param uri            The URI path of the API endpoint.
+     * @param queryString    The query string parameters of the request (can be null or empty).
+     * @param payload        The request payload as a String (can be null or empty for GET/HEAD requests).
+     * @param accessKey      The AWS access key ID used to call STS.
+     * @param secretKey      The AWS secret access key used to call STS.
+     * @param region         The region of the target AWS service (e.g., "us-east-1").
+     * @param sessionToken   The AWS session token if using temporary credentials (can be null or empty).
+     * @param roleArn        The Amazon Resource Name (ARN) of the IAM role to assume.
+     * @param roleRegion     The region in which the STS AssumeRole request should be made (can be null to use default).
+     * @param roleExternalId An optional external ID to use when assuming the role (can be null or empty).
+     * @return A {@code Map<String, String>} containing AWS Signature V4 authorization headers generated using
+     *         temporary credentials obtained via AssumeRole.
+     * @throws APIManagementException If an error occurs during any part of the signature generation or
+     *         AssumeRole process, including network issues, XML parsing errors, or missing credentials in the response.
+     */
     public static Map<String, String> generateAWSSignatureUsingAssumeRole(
             String host, String method, String service, String uri, String queryString, String payload,
             String accessKey, String secretKey, String region, String sessionToken,
