@@ -201,6 +201,10 @@ public class APIMgtGatewayConstants {
     public static final String ACCESS_GRANT_CLAIM_VALUE = "grantVerificationClaimValue";
     public static final String SHOULD_ALLOW_ACCESS_VALIDATION = "shouldAllowValidation";
 
+    /**
+     * System Properties related Constants
+     */
     public static final String INCLUDE_TOKEN_INFO_IN_MSG_CTX= "includeTokenInfoInMsgCtx";
+    public static final String ENABLE_SCHEMA_VALIDATION_FOR_ACCEPT_HEADER = "enableSchemaValidationForAcceptHeader";
 }
 
