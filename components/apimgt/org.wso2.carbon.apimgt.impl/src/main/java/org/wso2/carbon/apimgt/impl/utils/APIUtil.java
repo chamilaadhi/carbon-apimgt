@@ -11677,8 +11677,7 @@ public final class APIUtil {
         return ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService()
                 .getAPIManagerConfiguration().getSolaceConfig();
     }
-
-
+    
     /**
      * Generates the AWS Signature Version 4 headers for authenticating requests.
      * This method constructs the signature based on the provided request parameters and AWS credentials.
@@ -11930,7 +11929,7 @@ public final class APIUtil {
     }
     
     private static void processExternalGatewayFeatureCatalogs(Map<String, Object> gatewayConfigsMap,
-                                                              Map<String, List<String>> apiData, GatewayAgentConfiguration gatewayConfiguration) {
+        Map<String, List<String>> apiData, GatewayAgentConfiguration gatewayConfiguration) {
 
         GatewayPortalConfiguration config = null;
         try {
