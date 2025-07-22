@@ -501,6 +501,7 @@ public class InboundWebSocketProcessor implements WebSocketProcessor {
 
     /**
      * Sets or replaces a request header in InboundMessageContext matching the header key case-insensitively.
+     * Performs the add or replace operation only if the header key is not null and the request contains that header.
      *
      * @param headerKey             Header key to set or replace
      * @param request               Handshake request
@@ -508,12 +509,14 @@ public class InboundWebSocketProcessor implements WebSocketProcessor {
      */
     private static void setOrReplaceRequestHeaderIgnoreCase(String headerKey, FullHttpRequest request,
                                                             InboundMessageContext inboundMessageContext) {
-        Optional<String> existingKey = inboundMessageContext.getRequestHeaders().keySet()
-                .stream()
-                .filter(key -> key.equalsIgnoreCase(headerKey))
-                .findFirst();
+        if (headerKey != null && request.headers().get(headerKey) != null) {
+            Optional<String> existingKey = inboundMessageContext.getRequestHeaders().keySet()
+                    .stream()
+                    .filter(key -> key.equalsIgnoreCase(headerKey))
+                    .findFirst();
 
-        existingKey.ifPresent(inboundMessageContext.getRequestHeaders()::remove);
-        inboundMessageContext.getRequestHeaders().put(headerKey, request.headers().get(headerKey));
+            existingKey.ifPresent(inboundMessageContext.getRequestHeaders()::remove);
+            inboundMessageContext.getRequestHeaders().put(headerKey, request.headers().get(headerKey));
+        }
     }
 }
