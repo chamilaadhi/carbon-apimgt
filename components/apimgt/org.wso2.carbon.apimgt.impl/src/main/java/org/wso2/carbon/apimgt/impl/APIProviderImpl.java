@@ -3342,7 +3342,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             boolean isApiProduct = apiTypeWrapper.isAPIProduct();
             String workflowType;
 
-            if (!apiTypeWrapper.isAPIProduct()){
+            if (!apiTypeWrapper.isAPIProduct()) {
                 // validate custom API properties
                 if (StringUtils.equals(action, APIConstants.LC_PUBLISH_LC_STATE)) {
                     org.json.simple.JSONArray customProperties = APIUtil.getCustomProperties(this.tenantDomain);
