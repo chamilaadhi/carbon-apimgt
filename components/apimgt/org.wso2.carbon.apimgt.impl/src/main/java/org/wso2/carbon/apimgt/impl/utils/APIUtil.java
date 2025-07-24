@@ -10263,7 +10263,17 @@ public final class APIUtil {
         return defaultReservedUsername;
     }
 
-    public static JSONArray getCustomProperties(String tenantDomain) throws APIManagementException {
+    /**
+     * @deprecated Use {@link #getCustomPropertiesByOrganization(String)} instead.
+     */
+    @Deprecated
+    public static JSONArray getCustomProperties(String userId) throws APIManagementException {
+
+        String tenantDomain = MultitenantUtils.getTenantDomain(userId);
+        return getCustomPropertiesByOrganization(tenantDomain);
+    }
+
+    public static JSONArray getCustomPropertiesByOrganization(String tenantDomain) throws APIManagementException {
 
         JSONArray customPropertyAttributes = null;
         JSONObject propertyConfig = getMandatoryPropertyKeysFromRegistry(tenantDomain);

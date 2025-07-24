@@ -3345,7 +3345,8 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             if (!apiTypeWrapper.isAPIProduct()) {
                 // validate custom API properties
                 if (StringUtils.equals(action, APIConstants.LC_PUBLISH_LC_STATE)) {
-                    org.json.simple.JSONArray customProperties = APIUtil.getCustomProperties(this.tenantDomain);
+                    org.json.simple.JSONArray customProperties = APIUtil.getCustomPropertiesByOrganization(
+                            this.tenantDomain);
                     List<String> errorProperties = APIUtil.validateMandatoryProperties(customProperties,
                             apiTypeWrapper.getApi().getAdditionalProperties());
 
