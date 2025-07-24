@@ -329,6 +329,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static org.wso2.carbon.apimgt.impl.APIConstants.API_RELATED_CUSTOM_PROPERTIES_SURFIX;
 import static org.wso2.carbon.apimgt.impl.APIConstants.SHA_256;
 
 /**
@@ -11959,7 +11960,7 @@ public final class APIUtil {
      * @param additionalPropertiesMap additional properties to validate
      * @return list of erroneous property names. returns an empty array if there are no errors.
      */
-    public static List<String> validateMandatoryProperties(org.json.simple.JSONArray customProperties,
+    public static List<String> validateMandatoryProperties(JSONArray customProperties,
             JSONObject additionalPropertiesMap) {
 
         List<String> errorPropertyNames = new ArrayList<>();
@@ -11969,7 +11970,8 @@ public final class APIUtil {
             String propertyName = (String) property.get(APIConstants.CustomPropertyAttributes.NAME);
             boolean isRequired = (boolean) property.get(APIConstants.CustomPropertyAttributes.REQUIRED);
             if (isRequired) {
-                String mapPropertyDisplay = (String) additionalPropertiesMap.get(propertyName + "__display");
+                String mapPropertyDisplay = (String) additionalPropertiesMap.get(
+                        propertyName + API_RELATED_CUSTOM_PROPERTIES_SURFIX);
                 String mapProperty = (String) additionalPropertiesMap.get(propertyName);
 
                 if (mapProperty == null && mapPropertyDisplay == null) {
