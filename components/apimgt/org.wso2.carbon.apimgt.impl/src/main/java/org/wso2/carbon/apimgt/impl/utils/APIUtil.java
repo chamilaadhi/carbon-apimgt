@@ -10273,6 +10273,13 @@ public final class APIUtil {
         return getCustomPropertiesByOrganization(tenantDomain);
     }
 
+    /**
+     * Get custom properties of an API using the organization.
+     *
+     * @param tenantDomain Tenant domain of the organization
+     * @return JSONArray of custom property attributes
+     * @throws APIManagementException if an error occurs while retrieving custom properties
+     */
     public static JSONArray getCustomPropertiesByOrganization(String tenantDomain) throws APIManagementException {
 
         JSONArray customPropertyAttributes = null;
