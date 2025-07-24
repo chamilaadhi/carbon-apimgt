@@ -3705,7 +3705,7 @@ public class ApisApiServiceImpl implements ApisApiService {
             } else if (e.getErrorHandler()
                     .getErrorCode() == ExceptionCodes.ERROR_WHILE_UPDATING_MANDATORY_PROPERTIES.getErrorCode()) {
                 RestApiUtil.handleBadRequest(
-                        "Error while updating required properties of API " + apiId + ". Missing " + "mandatory properties" + e.getMessage(),
+                        "Error while updating required properties of API " + apiId + ". Missing mandatory properties" + e.getMessage(),
                         e.getErrorHandler().getErrorCode(), log);
             } else {
                 throw e;
