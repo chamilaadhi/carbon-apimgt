@@ -1004,7 +1004,7 @@ public class ApisApiServiceImpl implements ApisApiService {
             }
 
             // validate custom properties
-            org.json.simple.JSONArray customProperties = APIUtil.getCustomProperties(username);
+            org.json.simple.JSONArray customProperties = APIUtil.getCustomPropertiesByOrganization(organization);
             List<String> errorProperties = PublisherCommonUtils.validateMandatoryProperties(customProperties, body);
             if (!errorProperties.isEmpty()) {
                 String errorString = " : " + String.join(", ", errorProperties);
@@ -3702,6 +3702,11 @@ public class ApisApiServiceImpl implements ApisApiService {
             } else if (isAuthorizationFailure(e)) {
                 RestApiUtil.handleAuthorizationFailure(
                         "Authorization failure while updating the lifecycle of API " + apiId, e, log);
+            } else if (e.getErrorHandler() != null && e.getErrorHandler()
+                    .getErrorCode() == ExceptionCodes.ERROR_WHILE_UPDATING_MANDATORY_PROPERTIES.getErrorCode()) {
+                RestApiUtil.handleBadRequest(
+                        "Error while updating required properties of API " + apiId + ". Missing mandatory properties" + e.getMessage(),
+                        e.getErrorHandler().getErrorCode(), log);
             } else {
                 throw e;
             }
