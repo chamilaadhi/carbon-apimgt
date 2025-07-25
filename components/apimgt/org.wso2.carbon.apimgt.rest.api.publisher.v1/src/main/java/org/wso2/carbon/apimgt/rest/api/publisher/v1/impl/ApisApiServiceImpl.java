@@ -3703,7 +3703,7 @@ public class ApisApiServiceImpl implements ApisApiService {
                 RestApiUtil.handleAuthorizationFailure(
                         "Authorization failure while updating the lifecycle of API " + apiId, e, log);
             } else if (e.getErrorHandler() != null && e.getErrorHandler()
-                    .getErrorCode() == ExceptionCodes.ERROR_WHILE_UPDATING_MANDATORY_PROPERTIES.getErrorCode()) {
+                    .getErrorCode() == ExceptionCodes.ERROR_WHILE_VALIDATING_MANDATORY_PROPERTIES.getErrorCode()) {
                 RestApiUtil.handleBadRequest(
                         "Error while updating required properties of API " + apiId + ". Missing mandatory properties" + e.getMessage(),
                         e.getErrorHandler().getErrorCode(), log);
