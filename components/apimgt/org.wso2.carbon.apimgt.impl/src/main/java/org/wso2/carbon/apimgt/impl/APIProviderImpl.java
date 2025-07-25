@@ -3353,7 +3353,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                     if (!errorProperties.isEmpty()) {
                         String errorString = " : " + String.join(", ", errorProperties);
                         throw new APIManagementException(errorString, ExceptionCodes.from(ExceptionCodes
-                                .ERROR_WHILE_UPDATING_MANDATORY_PROPERTIES));
+                                .ERROR_WHILE_VALIDATING_MANDATORY_PROPERTIES));
                     }
                 }
             }
