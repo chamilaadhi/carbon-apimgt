@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.common.analytics.collectors.AnalyticsCustomDataProvider;
 import org.wso2.carbon.apimgt.common.gateway.jwtgenerator.AbstractAPIMgtGatewayJWTGenerator;
 import org.wso2.carbon.apimgt.gateway.handlers.analytics.Constants;
+import org.wso2.carbon.apimgt.gateway.inbound.websocket.WebSocketProcessor;
 import org.wso2.carbon.apimgt.gateway.throttling.ThrottleDataHolder;
 import org.wso2.carbon.apimgt.gateway.throttling.publisher.ThrottleDataPublisher;
 import org.wso2.carbon.apimgt.gateway.utils.redis.RedisCacheUtils;
@@ -108,6 +109,8 @@ public class ServiceReferenceHolder {
     }
     private ArtifactRetriever artifactRetriever;
     private int gatewayCount = 1;
+
+    private WebSocketProcessor websocketprocessor = null;
 
     private ServiceReferenceHolder() {
 
@@ -476,4 +479,14 @@ public class ServiceReferenceHolder {
 
         return llmProviderServiceMap.get(type);
     }
+
+    public void setWebsocketProcessor(WebSocketProcessor websocketprocessor) {
+        this.websocketprocessor = websocketprocessor;
+
+    }
+
+    public WebSocketProcessor getWebsocketProcessor() {
+        return websocketprocessor;
+    }
+
 }

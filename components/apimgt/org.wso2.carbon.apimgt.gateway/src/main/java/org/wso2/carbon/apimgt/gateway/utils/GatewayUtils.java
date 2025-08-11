@@ -38,6 +38,7 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.clustering.ClusteringAgent;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.description.AxisService;
+import org.apache.axis2.util.JavaUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.lang3.StringUtils;
@@ -547,12 +548,20 @@ public class GatewayUtils {
 
     public static String getQualifiedApiName(String apiName, String version) {
 
-        return apiName + ":v" + version;
+        if (org.wso2.carbon.apimgt.impl.utils.GatewayUtils.isSynapseAPIPrefixEnabled()) {
+            return APIConstants.SYNAPSE_API_NAME_PREFIX + "--" + apiName + ":v" + version;
+        } else {
+            return apiName + ":v" + version;
+        }
     }
 
     public static String getQualifiedDefaultApiName(String apiName) {
 
-        return apiName;
+        if (org.wso2.carbon.apimgt.impl.utils.GatewayUtils.isSynapseAPIPrefixEnabled()) {
+            return APIConstants.SYNAPSE_API_NAME_PREFIX + "--" + apiName;
+        } else {
+            return apiName;
+        }
     }
 
     /**
@@ -1839,5 +1848,15 @@ public class GatewayUtils {
             throw new IllegalArgumentException("Endpoint model cannot be null or empty");
         }
         return endpoint.getEndpointId() + "_" + endpoint.getModel();
+    }
+
+    /**
+     * Checks if Accept header validation is enabled for schema validation.
+     *
+     * @return true if Accept header validation is enabled, false otherwise
+     */
+    public static boolean isAcceptHeaderValidationEnabled() {
+        return JavaUtils.isTrueExplicitly(
+                System.getProperty(APIMgtGatewayConstants.ENABLE_SCHEMA_VALIDATION_FOR_ACCEPT_HEADER));
     }
 }

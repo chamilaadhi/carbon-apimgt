@@ -605,12 +605,27 @@ public abstract class AbstractAPIManager implements APIManager {
         return apiMgtDAO.isApiNameWithDifferentCaseExist(apiName, tenantName, organization);
     }
 
+    /**
+     * Adds a new subscriber to the system and creates a default application if enabled.
+     * This method warps addSubscriber and calls it with a null organization.
+     *
+     * @param username   The username of the subscriber to be added
+     * @param groupingId The grouping identifier for the subscriber
+     * @throws APIManagementException if an error occurs while adding the subscriber or creating default application
+     */
     public void addSubscriber(String username, String groupingId) throws APIManagementException {
         addSubscriber(username, groupingId, null);
     }
 
+    /**
+     * Adds a new subscriber to the system and creates a default application if enabled.
+     *
+     * @param username     The username of the subscriber to be added
+     * @param groupingId   The grouping identifier for the subscriber
+     * @param organization The organization identifier
+     * @throws APIManagementException if an error occurs while adding the subscriber or creating default application
+     */
     public void addSubscriber(String username, String groupingId, String organization) throws APIManagementException {
-
         Subscriber subscriber = new Subscriber(username);
         subscriber.setSubscribedDate(new Date());
         try {
@@ -624,18 +639,21 @@ public abstract class AbstractAPIManager implements APIManager {
                 // Add a default application once subscriber is added
                 addDefaultApplicationForSubscriber(subscriber, organization);
             }
-        } catch (APIManagementException e) {
-            String msg = "Error while adding the subscriber " + subscriber.getName();
-            throw new APIManagementException(msg, e);
-        } catch (org.wso2.carbon.user.api.UserStoreException e) {
+        } catch (APIManagementException | org.wso2.carbon.user.api.UserStoreException e) {
             String msg = "Error while adding the subscriber " + subscriber.getName();
             throw new APIManagementException(msg, e);
         }
     }
 
-    public void addSubscriberOnly(String username, String groupingId)
-            throws APIManagementException {
-
+    /**
+     * Adds a new subscriber to the system without creating a default application.
+     * This method only creates the subscriber entry in the database.
+     *
+     * @param username   The username of the subscriber to be added
+     * @param groupingId The grouping identifier for the subscriber
+     * @throws APIManagementException if an error occurs while adding the subscriber
+     */
+    public void addSubscriberOnly(String username, String groupingId) throws APIManagementException {
         Subscriber subscriber = new Subscriber(username);
         subscriber.setSubscribedDate(new Date());
         try {
@@ -644,10 +662,7 @@ public abstract class AbstractAPIManager implements APIManager {
             subscriber.setEmail(StringUtils.EMPTY);
             subscriber.setTenantId(tenantId);
             apiMgtDAO.addSubscriber(subscriber, groupingId);
-        } catch (APIManagementException e) {
-            String msg = "Error while adding the subscriber " + subscriber.getName();
-            throw new APIManagementException(msg, e);
-        } catch (org.wso2.carbon.user.api.UserStoreException e) {
+        } catch (APIManagementException | org.wso2.carbon.user.api.UserStoreException e) {
             String msg = "Error while adding the subscriber " + subscriber.getName();
             throw new APIManagementException(msg, e);
         }

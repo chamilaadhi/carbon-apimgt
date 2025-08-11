@@ -779,6 +779,7 @@ public class TemplateBuilderUtil {
         productAPIDto.setVersion(id.getVersion());
         productAPIDto.setTenantDomain(tenantDomain);
         productAPIDto.setKeyManagers(Collections.singletonList(APIConstants.KeyManager.API_LEVEL_ALL_KEY_MANAGERS));
+        productAPIDto.setAdditionalProperties(toStringMap(apiProduct.getAdditionalProperties()));
         String definition = apiProduct.getDefinition();
         productAPIDto.setLocalEntriesToBeRemove(GatewayUtils.addStringToList(apiProduct.getUuid(),
                 productAPIDto.getLocalEntriesToBeRemove()));
@@ -890,6 +891,7 @@ public class TemplateBuilderUtil {
         gatewayAPIDTO.setApiContext(api.getContext());
         gatewayAPIDTO.setTenantDomain(tenantDomain);
         gatewayAPIDTO.setKeyManagers(api.getKeyManagers());
+        gatewayAPIDTO.setAdditionalProperties(toStringMap(api.getAdditionalProperties()));
 
         String definition;
         boolean isGraphQLSubscriptionAPI = false;
@@ -1040,6 +1042,25 @@ public class TemplateBuilderUtil {
         }
         setSecureVaultPropertyToBeAdded(null, api, gatewayAPIDTO);
         return gatewayAPIDTO;
+    }
+    
+    /**
+     * Converts a JSONObject to a Map<String, String>.
+     *
+     * @param json the JSONObject to convert
+     * @return a map of string key-value pairs
+     */
+    private static Map<String, String> toStringMap(JSONObject json) {
+        Map<String, String> map = new HashMap<>();
+        if (json != null) {
+            for (Object keyObj : json.keySet()) {
+                String key = (String) keyObj;
+                Object valueObj = json.get(key);
+                String value = valueObj != null ? valueObj.toString() : null;
+                map.put(key, value);
+            }
+        }
+        return map;
     }
 
     private static void addEndpointsSequence(String type, List<SimplifiedEndpoint> endpoints,
