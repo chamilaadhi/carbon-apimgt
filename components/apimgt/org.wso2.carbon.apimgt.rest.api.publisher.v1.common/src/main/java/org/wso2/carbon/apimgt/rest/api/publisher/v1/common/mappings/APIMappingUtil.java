@@ -36,6 +36,7 @@ import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.APIProvider;
 import org.wso2.carbon.apimgt.api.ErrorHandler;
 import org.wso2.carbon.apimgt.api.ExceptionCodes;
+import org.wso2.carbon.apimgt.api.UsedByMigrationClient;
 import org.wso2.carbon.apimgt.api.WorkflowStatus;
 import org.wso2.carbon.apimgt.api.dto.APIEndpointValidationDTO;
 import org.wso2.carbon.apimgt.api.model.AIConfiguration;
@@ -2561,6 +2562,7 @@ public class APIMappingUtil {
         return listDto;
     }
 
+    @UsedByMigrationClient
     public static APIProductDTO fromAPIProducttoDTO(APIProduct product) throws APIManagementException {
 
         APIProductDTO productDto = new APIProductDTO();
@@ -2821,6 +2823,7 @@ public class APIMappingUtil {
         }
     }
 
+    @UsedByMigrationClient
     public static APIProduct fromDTOtoAPIProduct(APIProductDTO dto, String provider)
             throws APIManagementException {
 

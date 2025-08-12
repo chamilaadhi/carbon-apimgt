@@ -46,6 +46,7 @@ import org.wso2.carbon.apimgt.api.ExceptionCodes;
 import org.wso2.carbon.apimgt.api.FaultGatewaysException;
 import org.wso2.carbon.apimgt.api.MonetizationException;
 import org.wso2.carbon.apimgt.api.UnsupportedPolicyTypeException;
+import org.wso2.carbon.apimgt.api.UsedByMigrationClient;
 import org.wso2.carbon.apimgt.api.WorkflowResponse;
 import org.wso2.carbon.apimgt.api.doc.model.APIResource;
 import org.wso2.carbon.apimgt.api.dto.CertificateInformationDTO;
@@ -5283,6 +5284,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
     }
 
     @Override
+    @UsedByMigrationClient
     public void saveAsyncApiDefinition(API api, String jsonText) throws APIManagementException {
         String apiId;
         String organization = api.getOrganization();
@@ -6477,6 +6479,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
      * @throws APIManagementException if failed to add APIRevision
      */
     @Override
+    @UsedByMigrationClient
     public void deployAPIRevision(String apiId, String apiRevisionUUID,
             List<APIRevisionDeployment> apiRevisionDeployments, String organization)
             throws APIManagementException {
@@ -6982,6 +6985,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
     }
 
     @Override
+    @UsedByMigrationClient
     public void deployAPIProductRevision(String apiProductId, String apiRevisionId,
                                          List<APIRevisionDeployment> apiRevisionDeployments)
             throws APIManagementException {
@@ -8158,7 +8162,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         }
         return gatewayPolicyDeploymentMapForResponse;
     }
-    
+
     @Override
     public void updateSoapToRestSequences(String organization, String apiId, List<SOAPToRestSequence> sequences)
             throws APIManagementException {
