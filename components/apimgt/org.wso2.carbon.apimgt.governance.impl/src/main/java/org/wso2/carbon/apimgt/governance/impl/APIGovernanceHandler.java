@@ -407,9 +407,10 @@ public class APIGovernanceHandler implements ArtifactGovernanceHandler {
             throws APIMGovernanceException {
         synchronized (apiId.intern()) {
             try {
+                String tenantAdminUsername = RestApiCommonUtil.getLoggedInUsername();
                 APIIdentifier apiIdentifier = APIMappingUtil.getAPIIdentifierFromUUID(apiId);
                 String userName = apiIdentifier.getProviderName();
-                APIProvider apiProvider = APIManagerFactory.getInstance().getAPIProvider(userName);
+                APIProvider apiProvider = APIManagerFactory.getInstance().getAPIProvider(tenantAdminUsername);
                 if (revisionId != null) {
                     apiId = revisionId;
                 }
