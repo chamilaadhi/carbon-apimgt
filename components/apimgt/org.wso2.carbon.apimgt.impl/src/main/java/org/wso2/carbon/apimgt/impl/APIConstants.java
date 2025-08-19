@@ -2772,6 +2772,7 @@ public final class APIConstants {
     public static final String RECOMMENDATIONS_CACHE_KEY = "Recommendations";
     public static final String LAST_UPDATED_CACHE_KEY = "LastUpdated";
 
+    public static final String TOPIC_VALIDITY = "TOPIC_VALIDITY";
     public static final String CLONED_ITERATION_INDEX_PROPERTY = "CLONED_ITERATION_INDEX";
     public static final String TENANT_DOMAIN_INFO_PROPERTY = "tenant.info.domain";
     public static final String TENANT_ID_INFO_PROPERTY = "tenant.info.id";
@@ -3109,6 +3110,7 @@ public final class APIConstants {
         public static final String HUB_MODE_QUERY_PARAM = "hub.mode";
         public static final String HUB_LEASE_SECONDS_QUERY_PARAM = "hub.lease_seconds";
         public static final String TOPIC_QUERY_PARAM = "topic";
+        public static final String SIGNATURE_HEADER_NAME_PROPERTY = "signature_header_name";
         public static final String SUBSCRIBERS_LIST_PROPERTY = "SUBSCRIBERS_LIST";
         public static final String SUBSCRIBERS_COUNT_PROPERTY = "SUBSCRIBERS_COUNT";
         public static final String SUBSCRIBER_CALLBACK_PROPERTY = "SUBSCRIBER_CALLBACK";
