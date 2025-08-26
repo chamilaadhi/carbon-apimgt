@@ -45,6 +45,9 @@
         </jaxrs:providers>
     </jaxrs:server>
     <bean id="AuthenticationInterceptor" class="org.wso2.carbon.apimgt.rest.api.util.interceptors.auth.BasicAuthenticationInterceptor" />
+    <bean id="PermissionInterceptor" class="org.wso2.carbon.apimgt.rest.api.util.interceptors.auth.PermissionValidationInterceptor">
+        <property name="permission" value="/permission/admin/" />
+    </bean>
     <bean id="PreAuthenticationInterceptor" class="org.wso2.carbon.apimgt.rest.api.util.interceptors.PreAuthenticationInterceptor" />
     <bean id="PostAuthenticationInterceptor" class="org.wso2.carbon.apimgt.rest.api.util.interceptors.PostAuthenticationInterceptor" />
     <bean id="OrganizationInterceptor" class="org.wso2.carbon.apimgt.rest.api.util.interceptors.OrganizationInterceptor"/>
@@ -54,6 +57,7 @@
     <cxf:bus>
         <cxf:inInterceptors>
             <ref bean="PreAuthenticationInterceptor"/>
+            <ref bean="PermissionInterceptor"/>
             <ref bean="AuthenticationInterceptor"/>
             <ref bean="PostAuthenticationInterceptor"/>
             <ref bean="OrganizationInterceptor"/>
