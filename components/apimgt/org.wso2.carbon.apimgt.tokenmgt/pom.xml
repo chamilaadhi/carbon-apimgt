@@ -176,14 +176,14 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>dev.aspectj</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.14.0</version>
+                <version>1.14</version>
                 <configuration>
                     <skip>${skip.aspectj}</skip>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <complianceLevel>1.8</complianceLevel>
+                    <source>21</source>
+                    <target>21</target>
+                    <complianceLevel>21</complianceLevel>
                 </configuration>
                 <executions>
                     <execution>
@@ -192,6 +192,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>1.9.22</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -256,6 +263,7 @@
                             org.wso2.carbon.apimgt.tokenmgt.*
                         </Export-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
+                        <_contract>!*</_contract>
                     </instructions>
                 </configuration>
             </plugin>

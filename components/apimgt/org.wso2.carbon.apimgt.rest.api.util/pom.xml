@@ -184,6 +184,7 @@
                         <Export-Package>
                             org.wso2.carbon.apimgt.rest.api.util.*;version="${carbon.apimgt.version}"
                         </Export-Package>
+                        <_contract>!*</_contract>
                     </instructions>
                 </configuration>
             </plugin>

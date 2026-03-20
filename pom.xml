@@ -115,18 +115,6 @@
                     <version>${jacoco.version}</version>
                     <executions>
                         <execution>
-                            <id>default-instrument</id>
-                            <goals>
-                                <goal>instrument</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>default-restore-instrumented-classes</id>
-                            <goals>
-                                <goal>restore-instrumented-classes</goal>
-                            </goals>
-                        </execution>
-                        <execution>
                             <id>pre-unit-test</id>
                             <goals>
                                 <goal>prepare-agent</goal>
@@ -224,6 +212,25 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven.surefire.plugin.version}</version>
                     <configuration>
+                        <argLine>
+                            ${argLine}
+                            --add-opens java.base/java.lang=ALL-UNNAMED
+                            --add-opens java.base/java.lang.reflect=ALL-UNNAMED
+                            --add-opens java.base/java.util=ALL-UNNAMED
+                            --add-opens java.base/java.util.regex=ALL-UNNAMED
+                            --add-opens java.base/java.util.concurrent=ALL-UNNAMED
+                            --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED
+                            --add-opens java.base/java.io=ALL-UNNAMED
+                            --add-opens java.base/java.net=ALL-UNNAMED
+                            --add-opens java.base/java.math=ALL-UNNAMED
+                            --add-opens java.base/java.security=ALL-UNNAMED
+                            --add-opens java.base/java.security.cert=ALL-UNNAMED
+                            --add-opens java.base/sun.security.util=ALL-UNNAMED
+                            --add-opens java.base/sun.net.www.protocol.jar=ALL-UNNAMED
+                            --add-opens java.base/sun.net.www.protocol.file=ALL-UNNAMED
+                            --add-opens java.base/sun.net.www.protocol.https=ALL-UNNAMED
+                            --add-opens java.base/javax.net.ssl=ALL-UNNAMED
+                        </argLine>
                         <systemPropertyVariables>
                             <jacoco-agent.destfile>${basedir}/target/coverage-reports/jacoco-ut.exec
                             </jacoco-agent.destfile>
@@ -251,9 +258,16 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <release>21</release>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <configuration>
-                        <source>1.8</source>
+                        <source>21</source>
                     </configuration>
                     <executions>
                         <execution>
@@ -425,6 +439,7 @@
                 <artifactId>org.jacoco.agent</artifactId>
                 <classifier>runtime</classifier>
                 <version>${jacoco.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -1311,6 +1326,12 @@
                 <artifactId>powermock-module-junit4</artifactId>
                 <version>${powermock.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javassist</groupId>
+                        <artifactId>javassist</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -1318,6 +1339,12 @@
                 <artifactId>powermock-api-mockito2</artifactId>
                 <version>${powermock.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javassist</groupId>
+                        <artifactId>javassist</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -2002,9 +2029,9 @@
                 <version>${spotbugs.annotations.version}</version>
             </dependency>
             <dependency>
-                <groupId>javassist</groupId>
+                <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.3.GA</version>
+                <version>${javassist.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -2130,7 +2157,7 @@
         <!-- P2 Plugin Version -->
         <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
 
-        <maven-bundle-plugin.version>3.3.0</maven-bundle-plugin.version>
+        <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
         <build-helper-maven-plugin.version>1.9.1</build-helper-maven-plugin.version>
         <axis2-java2wsdl-maven-plugin.version>1.6.3</axis2-java2wsdl-maven-plugin.version>
 
@@ -2252,13 +2279,13 @@
         <wsdl4j.version>1.6.3.wso2v3</wsdl4j.version>
         <slf4j.test.version>2.0.12</slf4j.test.version>
         <reflection.version>0.9.11</reflection.version>
-        <jacoco.version>0.8.4</jacoco.version>
+        <jacoco.version>0.8.12</jacoco.version>
         <xml-apis.version>1.4.01</xml-apis.version>
-        <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
+        <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
         <maven.war.plugin.version>3.2.3</maven.war.plugin.version>
         <wiremock.version>2.5.0</wiremock.version>
         <mockito.version>2.23.4</mockito.version>
-        <powermock.version>2.0.2</powermock.version>
+        <powermock.version>2.0.9</powermock.version>
         <mockserver.version>5.14.0</mockserver.version>
         <reflection.version>0.9.11</reflection.version>
         <woodstox-core.version>6.2.1</woodstox-core.version>
@@ -2285,10 +2312,9 @@
         <opentracing.api.version>0.31.0</opentracing.api.version>
         <opentracing.mock.version>0.31.0</opentracing.mock.version>
         <opentelemetry.all.version>1.11.0.wso2v7</opentelemetry.all.version>
-        <aspectj.version>1.9.5</aspectj.version>
+        <aspectj.version>1.9.22</aspectj.version>
         <everit.version>1.5.0.wso2.v2</everit.version>
         <json.orbit.version>3.0.0.wso2v7</json.orbit.version>
-        <aspectj.version>1.9.4</aspectj.version>
         <wso2.securevault.version>1.1.17</wso2.securevault.version>
         <com.jayway.jsonpath.version>2.9.0.wso2v1</com.jayway.jsonpath.version>
         <org.wso2.orbit.commons-text.version>1.10.0.wso2v2</org.wso2.orbit.commons-text.version>
@@ -2335,5 +2361,6 @@
         <mcp.transformer.version>0.9.1</mcp.transformer.version>
         <netty.version>4.2.9.Final</netty.version>
         <apicurio.version>2.2.2</apicurio.version>
+        <javassist.version>3.30.2-GA</javassist.version>
     </properties>
 </project>

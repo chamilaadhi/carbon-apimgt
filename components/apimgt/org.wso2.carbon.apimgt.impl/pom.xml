@@ -298,11 +298,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
@@ -471,16 +466,16 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>dev.aspectj</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.14.0</version>
+                <!--Uncomment the following in order to debug the aspectJ weaving-->
+                <!--<showWeaveInfo>true</showWeaveInfo>-->
+                <version>1.14</version>
                 <configuration>
                     <skip>${skip.aspectj}</skip>
-                    <!--Uncomment the following in order to debug the aspectJ weaving-->
-                    <!--<showWeaveInfo>true</showWeaveInfo>-->
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <complianceLevel>1.8</complianceLevel>
+                    <source>21</source>
+                    <target>21</target>
+                    <complianceLevel>21</complianceLevel>
                     <excludes>
                         <!--The following class have been excluded from aspectj weaving, to avoid build failures-->
                         <exclude>**/thrift/*Service.java</exclude>
@@ -493,6 +488,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>1.9.22</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -655,6 +657,7 @@
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
+                        <_contract>!*</_contract>
                         <Provide-Capability>
                             osgi.service;objectClass=org.wso2.carbon.apimgt.impl.APIManagerConfigurationService,
                             osgi.service;objectClass=org.wso2.carbon.apimgt.impl.jwt.JWTValidationService,
